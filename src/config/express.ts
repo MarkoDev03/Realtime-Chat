@@ -22,7 +22,6 @@ app.use(cors(corsFilter));
 app.use(appendApiVersion);
 app.use(morganMiddleware);
 app.use("/api", middleware);
-app.use(errorConvertor);
 app.use("*", notFoundHandler);
 app.use(errorHandler);
 

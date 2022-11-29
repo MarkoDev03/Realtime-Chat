@@ -12,4 +12,10 @@ export interface IEnviromentVars {
   ALLOWED_ORIGINS: string[];
 
   CONNECTION_STRING: string;
+
+  SALT_ROUNDS: number;
+
+  JWT_SECRET_KEY: string;
+  JWT_SESSION_LIFE: string;
+  JWT_REFRESH_TOKEN_SESSION_LIFE: string;
 }

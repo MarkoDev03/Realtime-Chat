@@ -1,8 +1,8 @@
 import { Router } from "express";
-import startRoutes from "../routes/chat.routes";
+import auth from "../routes/auth.routes";
 
 const router = Router();
 
-router.use("/socket", startRoutes);
+router.use("/authentication", auth);
 
 export default router;

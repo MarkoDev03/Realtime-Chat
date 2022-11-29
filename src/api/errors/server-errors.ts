@@ -23,3 +23,15 @@ export class NotAllowed extends CustomError {
     Object.setPrototypeOf(this, NotFound.prototype);
   }
 }
+
+
+export class BadRequest extends CustomError {
+  constructor(public message: string) {
+    super(message);
+
+    this.status = StatusCodes.BAD_REQUEST;
+    this.name = "BadRequest";
+
+    Object.setPrototypeOf(this, BadRequest.prototype);
+  }
+}

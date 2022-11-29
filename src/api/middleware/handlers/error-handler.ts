@@ -9,11 +9,11 @@ export const errorHandler = (error: Error, req: Request, res: Response, next: Ne
   Logger.error(error.message, error.stack);
 
   if (error instanceof CustomError) {
-    res.status(error.status).json({
+    res.status(error.status ?? StatusCodes.INTERNAL_SERVER_ERROR).json({
       errors: error.serializeError()
     });
 
-    return next();
+    return;
   }
 
   res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -23,5 +23,5 @@ export const errorHandler = (error: Error, req: Request, res: Response, next: Ne
     }]
   });
 
-  return next();
+  return;
 }

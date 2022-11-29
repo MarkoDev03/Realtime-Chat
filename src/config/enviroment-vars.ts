@@ -15,5 +15,11 @@ export const Enviroment: IEnviromentVars = {
 
   ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS?.split(','),
 
-  CONNECTION_STRING: process.env.CONNECTION_STRING
+  CONNECTION_STRING: process.env.CONNECTION_STRING,
+
+  SALT_ROUNDS: Number(process.env.SALT_ROUNDS),
+
+  JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
+  JWT_SESSION_LIFE: process.env.JWT_SESSION_LIFE,
+  JWT_REFRESH_TOKEN_SESSION_LIFE: process.env.JWT_REFRESH_TOKEN_SESSION_LIFE
 }
