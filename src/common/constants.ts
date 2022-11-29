@@ -14,5 +14,8 @@ export const Constants = {
   ACCOUNT_DELETED_SUCCESSFULLY: "Account deleted successfully",
   ALREADY_IN_CHAT: "You are already in this chat.",
   CHAT_DOESNT_EXIST: "This chat doesn't exist",
-  CHAT_JOINED_SUCCESSFULLY: "You joined chat successfully"
+  CHAT_JOINED_SUCCESSFULLY: "You joined chat successfully",
+  ADMIN_CANT_JOIN_CHAT: "Admin can't join group which is created by him",
+  YOU_ARE_NOT_IN_THIS_CHAT: "You are not in this chat",
+  CHAT_LEFT_SUCCESSFULLY: "You left the chat successfully"
 }

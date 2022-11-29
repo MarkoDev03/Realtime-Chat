@@ -6,7 +6,7 @@ const stream: StreamOptions = {
 }
 
 const morganMiddleware = morgam(
-  ":method :url :status :response-time ms",
+  ":method :url [:status] :response-time ms",
   {
     stream
   }
