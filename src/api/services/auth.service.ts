@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { Constants } from "../../common/constants";
 import { Enviroment } from "../../config/enviroment-vars";
 import { DateFormats } from "../../utils/date-formats";
-import { BadRequest } from "../errors/server-errors";
+import { BadRequest, UnAuthorized } from "../errors/server-errors";
 import { Tokens } from "../models/classes/tokens";
 import bcrypt from "bcrypt";
 import { UserResponse } from "../models/classes/user-response";
@@ -70,5 +70,52 @@ export class AuthService {
     if (user) {
       throw new APIError(Constants.USERNAME_IS_TAKEN, StatusCodes.BAD_REQUEST);
     }
+  }
+
+  public static verifyJWT(token: any): any {
+
+    let response = null;
+    try {
+
+      if (!token) {
+        throw new UnAuthorized();
+      }
+
+      const bearer = token?.split(' ')[1];
+
+      jwt.verify(bearer, Enviroment.JWT_SECRET_KEY, (err: any, data: any) => {
+        if (err) {
+          throw new UnAuthorized();
+        }
+
+        response = data;
+      });
+    } catch (error) {
+      throw new APIError(error?.message, StatusCodes.BAD_REQUEST);
+    }
+
+    return response;
+  }
+
+  public static validatePasswordParams(oldPassword: any, newPassword: any, confirmPassword: any) {
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      throw new BadRequest(Constants.ALL_FIELDS_ARE_REQUIRED);
+    }
+  }
+
+  public static async getUserByToken(token: any) {
+    const response = AuthService.verifyJWT(token);
+
+    if (response == null) {
+      throw new UnAuthorized();
+    }
+
+    const user = await User.findOne({ userId: response?.userId }).select({  _id: 0, __v: 0 });
+
+    if (user == null) {
+      throw new UnAuthorized();
+    }
+
+    return user;
   }
 }

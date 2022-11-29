@@ -6,5 +6,13 @@ export const Constants = {
   ALL_FIELDS_ARE_REQUIRED: "All fields are required",
   USER_NOT_FOUND: "There are no users with this username.",
   WRONG_PASSWORD: "Password doesn't match",
-  USERNAME_IS_TAKEN: "This username is already taken"
+  USERNAME_IS_TAKEN: "This username is already taken",
+  UNAUTHORIZED: "Unauthorized",
+  PASSWORDS_DOESNT_MATCH: "Confirmed password doesn't match new password",
+  PASSWORD_CHANGED_SUCCESSFULLY: "Password changed successfully",
+  NEW_PASSWORD_AND_OLD_PASSWORD_ARE_THE_SAME: "New password cannot be the same as the old one.",
+  ACCOUNT_DELETED_SUCCESSFULLY: "Account deleted successfully",
+  ALREADY_IN_CHAT: "You are already in this chat.",
+  CHAT_DOESNT_EXIST: "This chat doesn't exist",
+  CHAT_JOINED_SUCCESSFULLY: "You joined chat successfully"
 }

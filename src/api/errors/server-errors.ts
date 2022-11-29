@@ -35,3 +35,15 @@ export class BadRequest extends CustomError {
     Object.setPrototypeOf(this, BadRequest.prototype);
   }
 }
+
+
+export class UnAuthorized extends CustomError {
+  constructor() {
+    super(Constants.UNAUTHORIZED);
+
+    this.status = StatusCodes.UNAUTHORIZED;
+    this.name = "UnAuthorized";
+
+    Object.setPrototypeOf(this, BadRequest.prototype);
+  }
+}
