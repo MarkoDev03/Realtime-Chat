@@ -8,6 +8,7 @@ import { Constants } from "../../common/constants";
 import { ChatService } from "../services/chat.service";
 import { StatusCodes } from "http-status-codes";
 import User from "../models/schemas/user";
+import { Logger } from "../../config/logger";
 
 export const createChat = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -116,14 +117,14 @@ export const getChatParticipants = async (req: Request, res: Response, next: Nex
 
     const chat = await Chat.findOne({ chatId: chatId });
 
-    if (!chat) {
-      throw new APIError(Constants.CHAT_DOESNT_EXIST, StatusCodes.NOT_FOUND)
+    if (chat === null) {
+      throw new BadRequest(Constants.CHAT_DOESNT_EXIST);
     }
 
     const participants = chat.participants;
     const participantsResult = [];
 
-    if (chat.participants.length > 0) {
+    if (chat && chat.participants.length > 0) {
       let count = 0;
 
       while (count !== participants.length) {
@@ -139,6 +140,22 @@ export const getChatParticipants = async (req: Request, res: Response, next: Nex
     }
 
     res.status(200).json(participantsResult);
+  } catch (error) {
+    return next(new APIError(error?.message, error?.status));
+  }
+}
+
+export const getMyChats = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const token = req.headers.authorization;
+    const user = await AuthService.getUserByToken(token);
+
+    const chatsCreatedByMe = await Chat.find({ userId: user.userId });
+    const chatsWhereIAmParticipant = await Chat.find({ participants: user.userId });
+
+    const getMyChats = [...chatsCreatedByMe, ...chatsWhereIAmParticipant];
+
+    res.status(200).json(getMyChats);
   } catch (error) {
     next(new APIError(error?.message, error?.status));
   }

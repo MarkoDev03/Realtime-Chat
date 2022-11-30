@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { createChat, getChatParticipants, joinChat, leaveChat } from "../controllers/chat.controller";
+import { createChat, getChatParticipants, getMyChats, joinChat, leaveChat } from "../controllers/chat.controller";
 import { verifyJWT } from "../middleware/handlers/verify-jwt";
 
 const router = Router();
 
 router.route("/get-chat-participants").get(verifyJWT, getChatParticipants);
+router.route("/get-my-chats-list").get(verifyJWT, getMyChats);
 
 router.route("/create-chat").post(verifyJWT, createChat);
 
