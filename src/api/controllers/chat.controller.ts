@@ -8,7 +8,6 @@ import { Constants } from "../../common/constants";
 import { ChatService } from "../services/chat.service";
 import { StatusCodes } from "http-status-codes";
 import User from "../models/schemas/user";
-import { Logger } from "../../config/logger";
 
 export const createChat = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -156,6 +155,118 @@ export const getMyChats = async (req: Request, res: Response, next: NextFunction
     const getMyChats = [...chatsCreatedByMe, ...chatsWhereIAmParticipant];
 
     res.status(200).json(getMyChats);
+  } catch (error) {
+    next(new APIError(error?.message, error?.status));
+  }
+}
+
+export const deleteChat = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const token = req.headers.authorization;
+    const user = await AuthService.getUserByToken(token);
+
+    const { chatId } = req.body;
+
+    if (!chatId) {
+      throw new BadRequest(Constants.ALL_FIELDS_ARE_REQUIRED);
+    }
+
+    const chat = await Chat.findOne({ userId: user.userId, chatId: chatId });
+    await Chat.findByIdAndDelete(chat._id);
+
+    res.status(200).json({ message: Constants.CHAT_DELETED_SUCCESSFULLY });
+  } catch (error) {
+    next(new APIError(error?.message, error?.status));
+  }
+}
+
+export const removeParticipant = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const token = req.headers.authorization;
+    const user = await AuthService.getUserByToken(token);
+
+    const { chatId, participantId } = req.body;
+
+    if (!chatId || !participantId) {
+      throw new BadRequest(Constants.ALL_FIELDS_ARE_REQUIRED);
+    }
+
+    const chat = await Chat.findOne({ chatId: chatId, userId: user.userId });
+
+    const isInChat = await ChatService.isInChat(participantId, chatId.toString());
+
+    if (!isInChat) {
+      throw new BadRequest(Constants.YOU_ARE_NOT_IN_THIS_CHAT);
+    }
+
+    if (!chat) {
+      throw new APIError(Constants.CHAT_DOESNT_EXIST, StatusCodes.NOT_FOUND)
+    }
+
+    const participants = chat.participants.filter((x) => x !== participantId);
+
+    await Chat.findByIdAndUpdate(chat._id, { participants: participants });
+
+    res.status(200).json({ message: Constants.REMOVED_PARTICIPANT_SUCCESSFULLY });
+  } catch (error) {
+    next(new APIError(error?.message, error?.status));
+  }
+}
+
+export const addParticpant = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const token = req.headers.authorization;
+    const user = await AuthService.getUserByToken(token);
+
+    const { chatId, participantId } = req.body;
+
+    if (!chatId || !participantId) {
+      throw new BadRequest(Constants.ALL_FIELDS_ARE_REQUIRED);
+    }
+
+    const chat = await Chat.findOne({ chatId: chatId, userId: user.userId });
+
+    const isInChat = await ChatService.isInChat(participantId, chatId.toString());
+
+    if (isInChat) {
+      throw new BadRequest(Constants.ALREADY_IN_CHAT);
+    }
+
+    if (!chat) {
+      throw new APIError(Constants.CHAT_DOESNT_EXIST, StatusCodes.NOT_FOUND)
+    }
+
+    const participants = chat.participants;
+    participants.push(user.userId);
+
+    await Chat.findByIdAndUpdate(chat._id, { participants: participants });
+
+    res.status(200).json({ message: Constants.ADDED_PARTICIPANT });
+  } catch (error) {
+    next(new APIError(error?.message, error?.status));
+  }
+}
+
+export const renameChat = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const token = req.headers.authorization;
+    const user = await AuthService.getUserByToken(token);
+
+    const { chatId, name } = req.body;
+
+    if (!chatId || !name) {
+      throw new BadRequest(Constants.ALL_FIELDS_ARE_REQUIRED);
+    }
+
+    const chat = await Chat.findOne({ chatId: chatId, userId: user.userId });
+
+    if (!chat) {
+      throw new APIError(Constants.CHAT_DOESNT_EXIST, StatusCodes.NOT_FOUND)
+    }
+
+    await Chat.findByIdAndUpdate(chat._id, { name: name });
+
+    res.status(200).json({ message: Constants.CHAT_RENAMED_SUCCESSFULLY });
   } catch (error) {
     next(new APIError(error?.message, error?.status));
   }
