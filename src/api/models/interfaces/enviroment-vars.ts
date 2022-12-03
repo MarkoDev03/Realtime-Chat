@@ -18,4 +18,6 @@ export interface IEnviromentVars {
   JWT_SECRET_KEY: string;
   JWT_SESSION_LIFE: string;
   JWT_REFRESH_TOKEN_SESSION_LIFE: string;
+
+  RABBITMQ_URL: string;
 }

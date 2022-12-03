@@ -21,5 +21,9 @@ export const Constants = {
   CHAT_DELETED_SUCCESSFULLY: "Chat deleted successfully",
   REMOVED_PARTICIPANT_SUCCESSFULLY: "Successfully removed participant from chat",
   ADDED_PARTICIPANT: "Participant added successfully",
-  CHAT_RENAMED_SUCCESSFULLY: "Chat renamed successfully"
+  CHAT_RENAMED_SUCCESSFULLY: "Chat renamed successfully",
+  RABBITMQ_CONNECTION_FAILED: "Failed to connect to RabbitMQ",
+  FAILED_TO_CREATE_QUEUE: "Error while creating queue.",
+  CHANNEL_IS_NULL: "RabbitMQ Channel is null",
+  FAILED_TO_PRODUCE_MESSAG: "Failed to produce the message"
 }
