@@ -8,6 +8,7 @@ import { Constants } from "../../common/constants";
 import { ChatService } from "../services/chat.service";
 import { StatusCodes } from "http-status-codes";
 import User from "../models/schemas/user";
+import Message from "../models/schemas/message";
 
 export const createChat = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -173,6 +174,12 @@ export const deleteChat = async (req: Request, res: Response, next: NextFunction
 
     const chat = await Chat.findOne({ userId: user.userId, chatId: chatId });
     await Chat.findByIdAndDelete(chat._id);
+
+    const messages = await Message.find({ chatId: chatId });
+
+    if (messages.length > 0) {
+      Message.deleteMany({ chatId: chatId });
+    }
 
     res.status(200).json({ message: Constants.CHAT_DELETED_SUCCESSFULLY });
   } catch (error) {
